@@ -161,6 +161,38 @@ export default function Home() {
 
       </section>
 
+      {/* Game Categories Section */}
+      <section id="games" className="max-sm:scroll-m-16 py-10 sm:py-20 container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className={`text-4xl md:text-5xl py-2 font-bold text-center mb-12 bg-gradient-to-r bg-clip-text text-transparent ${isDark
+            ? 'from-purple-400 to-purple-400'
+            : 'from-purple-600 to-purple-600'
+            }`}>
+            {t('gameCategories')}
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {gamesData.map((game, idx) => (
+              <motion.div
+                key={game.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                <GameCard game={game} />
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+
       {/* Popular Top-Ups Section */}
       <section className="py-10 sm:py-20 container mx-auto px-4">
         <motion.div
@@ -190,37 +222,6 @@ export default function Home() {
                   gameName={product.gameName}
                   onOrder={() => handleOrder(product.gameName, product.amount, product.price)}
                 />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Game Categories Section */}
-      <section id="games" className="max-sm:scroll-m-16 py-10 sm:py-20 container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className={`text-4xl md:text-5xl py-2 font-bold text-center mb-12 bg-gradient-to-r bg-clip-text text-transparent ${isDark
-            ? 'from-purple-400 to-purple-400'
-            : 'from-purple-600 to-purple-600'
-            }`}>
-            {t('gameCategories')}
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {gamesData.map((game, idx) => (
-              <motion.div
-                key={game.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <GameCard game={game} />
               </motion.div>
             ))}
           </div>
