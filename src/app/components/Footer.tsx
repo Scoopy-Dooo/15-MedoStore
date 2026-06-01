@@ -96,7 +96,7 @@ export function Footer() {
         <div className={`fixed bottom-0 z-20 left-0 right-0 mt-8 py-2  backdrop-blur-lg   border-t text-center ${isDark ? 'border-purple-500/20 text-gray-400 bg-zinc-950/50' : 'bg-white/50 border-gray-200 text-gray-600'
           }`}>
           <p className='sm:text-sm'>© 2026 MEDO STORE. {t('allRightsReserved')}</p>
-          <a className='hover:text-blue-500 text-nowrap text-xs sm:text-sm md:text-lg text-red-400' href="https://github.com/Scoopy-Dooo" target="_blank" rel="noopener noreferrer">{t('designer')}</a>
+          <a className='hover:text-blue-500 text-nowrap text-xs sm:text-xs md:text-sm text-purple-400' href="https://github.com/Scoopy-Dooo" target="_blank" rel="noopener noreferrer">{t('designer')}</a>
         </div>
       </div>
     </footer>
