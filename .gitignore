@@ -1,0 +1,65 @@
+# Node dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+out/
+.next/
+*.tsbuildinfo
+
+# Cache
+.cache/
+.vite/
+.venv/
+tmp/
+temp/
+
+# Log files
+*.log
+*.log.*
+logs/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Testing / coverage
+coverage/
+*.lcov
+.jest/
+.cypress/
+playwright-report/
+
+# IDE / editor
+.vscode/
+.vscode/**
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.csproj
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Misc
+.envrc
+*.pem
+*.p12
+*.key
+!.gitkeep
