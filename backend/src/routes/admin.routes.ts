@@ -5,10 +5,13 @@
 
 import { Router } from 'express';
 import { AdminController } from '../controllers/admin.controller.js';
+import { GamesController } from '../controllers/games.controller.js';
+import { createGameValidation, updateGameValidation } from './games.routes.js';
 import { authenticate, authorize } from '../middlewares/auth.js';
 
 const router = Router();
 const adminController = new AdminController();
+const gamesController = new GamesController();
 
 // جميع المسارات تتطلب صلاحيات Admin
 router.use(authenticate);
@@ -18,6 +21,11 @@ router.use(authorize('ADMIN', 'SUPER_ADMIN'));
 router.get('/dashboard/stats', adminController.getDashboardStats);
 router.get('/dashboard/recent-orders', adminController.getRecentOrders);
 router.get('/dashboard/recent-users', adminController.getRecentUsers);
+
+// Game management
+router.post('/games', createGameValidation, gamesController.createGame);
+router.put('/games/:gameId', updateGameValidation, gamesController.updateGame);
+router.delete('/games/:gameId', gamesController.deleteGame);
 
 // User Management
 router.get('/users', adminController.getAllUsers);
