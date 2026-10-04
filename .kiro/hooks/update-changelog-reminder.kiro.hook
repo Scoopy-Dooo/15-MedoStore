@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Update CHANGELOG Reminder",
+  "description": "يذكرني بتحديث CHANGELOG.md عند إضافة ميزات جديدة",
+  "version": "1",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "إذا تم إضافة ميزة جديدة أو إصلاح خطأ مهم:\n1. حدّث CHANGELOG.md\n2. أضف الميزة/الإصلاح في القسم [Unreleased]\n3. اتبع التنسيق الصحيح (feat: / fix: / etc.)\n4. أضف وصف واضح بالعربية\nهل تريد أن أساعدك في تحديث CHANGELOG؟"
+  }
+}

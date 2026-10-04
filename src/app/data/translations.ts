@@ -46,6 +46,174 @@ export const translations = {
     telegramPremium: "اشتراك تلجرام بريميم",
     teleLogin: "حل مشكلة تسجيل الدخول",
     gameBooster: " اشتراكات جير أب بوستر ",
+    login: 'تسجيل الدخول',
+    register: 'إنشاء حساب',
+    forgotPassword: 'نسيت كلمة المرور',
+    profile: 'الملف الشخصي',
+    orders: 'الطلبات',
+    settings: 'الإعدادات',
+    logout: 'تسجيل الخروج',
+
+    // ============================================
+    // Admin Dashboard Translations - ترجمات لوحة التحكم
+    // ============================================
+
+    // Navigation
+    adminDashboard: 'لوحة التحكم',
+    gamesManagement: 'إدارة الألعاب',
+    packagesManagement: 'إدارة الباقات',
+    statistics: 'الإحصائيات',
+
+    // Common Actions
+    add: 'إضافة',
+    edit: 'تعديل',
+    delete: 'حذف',
+    save: 'حفظ',
+    cancel: 'إلغاء',
+    confirm: 'تأكيد',
+    search: 'بحث',
+    filter: 'فلتر',
+    clearFilters: 'مسح الفلاتر',
+    retry: 'إعادة المحاولة',
+    refresh: 'تحديث',
+    update: 'تحديث',
+    create: 'إنشاء',
+    close: 'إغلاق',
+    back: 'رجوع',
+    viewAll: 'عرض الكل',
+
+    // Game Form Labels
+    addGame: 'إضافة لعبة',
+    editGame: 'تعديل لعبة',
+    deleteGame: 'حذف لعبة',
+    gameName: 'اسم اللعبة',
+    gameNameAr: 'اسم اللعبة (عربي)',
+    gameDescription: 'وصف اللعبة',
+    gameDescriptionAr: 'وصف اللعبة (عربي)',
+    gameImage: 'صورة اللعبة',
+    gameCategory: 'فئة اللعبة',
+    gameStatus: 'حالة اللعبة',
+
+    // Package Form Labels
+    addPackage: 'إضافة باقة',
+    editPackage: 'تعديل باقة',
+    deletePackage: 'حذف باقة',
+    packageGame: 'اللعبة',
+    packageAmount: 'الكمية',
+    packagePrice: 'السعر',
+    packageOldPrice: 'السعر القديم',
+    packageStock: 'المخزون',
+    packagePopular: 'باقة مميزة',
+    packageStatus: 'حالة الباقة',
+
+    // Status Labels
+    active: 'نشط',
+    inactive: 'غير نشط',
+    allStatus: 'جميع الحالات',
+    allCategories: 'جميع الفئات',
+    allGames: 'جميع الألعاب',
+    lowStock: 'مخزون منخفض',
+    outOfStock: 'نفد المخزون',
+
+    // Success Messages
+    gameCreated: 'تم إنشاء اللعبة بنجاح',
+    gameUpdated: 'تم تحديث اللعبة بنجاح',
+    gameDeleted: 'تم حذف اللعبة بنجاح',
+    packageCreated: 'تم إنشاء الباقة بنجاح',
+    packageUpdated: 'تم تحديث الباقة بنجاح',
+    packageDeleted: 'تم حذف الباقة بنجاح',
+    stockUpdated: 'تم تحديث المخزون بنجاح',
+    imageuploaded: 'تم رفع الصورة بنجاح',
+
+    // Error Messages
+    errorLoadingGames: 'فشل تحميل الألعاب',
+    errorLoadingPackages: 'فشل تحميل الباقات',
+    errorLoadingStats: 'فشل تحميل الإحصائيات',
+    errorCreatingGame: 'فشل إنشاء اللعبة',
+    errorUpdatingGame: 'فشل تحديث اللعبة',
+    errorDeletingGame: 'فشل حذف اللعبة',
+    errorCreatingPackage: 'فشل إنشاء الباقة',
+    errorUpdatingPackage: 'فشل تحديث الباقة',
+    errorDeletingPackage: 'فشل حذف الباقة',
+    errorUploadingImage: 'فشل رفع الصورة',
+
+    // Validation Messages
+    fieldRequired: 'هذا الحقل مطلوب',
+    invalidPrice: 'يجب أن يكون السعر رقماً موجباً',
+    invalidStock: 'يجب أن يكون المخزون رقماً غير سالب',
+    nameTooShort: 'يجب أن يكون الاسم حرفين على الأقل',
+    oldPriceMustBeHigher: 'يجب أن يكون السعر القديم أعلى من السعر الحالي',
+    imageSizeTooLarge: 'حجم الصورة يتجاوز 5 ميجابايت',
+    invalidImageType: 'نوع الملف غير مدعوم. يُقبل JPEG، PNG، WebP، GIF فقط',
+
+    // Confirmation Dialogs
+    confirmDeleteGame: 'هل أنت متأكد من حذف هذه اللعبة؟',
+    confirmDeletePackage: 'هل أنت متأكد من حذف هذه الباقة؟',
+    actionCannotBeUndone: 'لا يمكن التراجع عن هذا الإجراء',
+
+    // Statistics
+    totalActiveGames: 'إجمالي الألعاب النشطة',
+    totalActivePackages: 'إجمالي الباقات المتاحة',
+    totalRevenue: 'إجمالي الإيرادات',
+    totalOrders: 'إجمالي الطلبات',
+    popularGames: 'الألعاب الأكثر طلباً',
+    lowStockPackages: 'الباقات منخفضة المخزون',
+    noGamesFound: 'لا توجد ألعاب',
+    noPackagesFound: 'لا توجد باقات',
+    noDataAvailable: 'لا توجد بيانات',
+
+    // Date Range Filter
+    dateRange: 'نطاق التاريخ',
+    today: 'اليوم',
+    last7Days: 'آخر 7 أيام',
+    last30Days: 'آخر 30 يوماً',
+    customRange: 'نطاق مخصص',
+    applyFilter: 'تطبيق',
+    clearFilter: 'مسح',
+    dateFilterActive: 'فلتر التاريخ نشط',
+
+    // Table Headers
+    image: 'الصورة',
+    nameEn: 'الاسم (EN)',
+    nameAr: 'الاسم (AR)',
+    category: 'الفئة',
+    packagesCount: 'الباقات',
+    status: 'الحالة',
+    actions: 'الإجراءات',
+    price: 'السعر',
+    oldPrice: 'السعر القديم',
+    stock: 'المخزون',
+    popular: 'مميز',
+    game: 'اللعبة',
+    amount: 'الكمية',
+    ordersCount: 'الطلبات',
+
+    // Pagination
+    previous: 'السابق',
+    next: 'التالي',
+    page: 'صفحة',
+    of: 'من',
+    showing: 'عرض',
+    results: 'نتيجة',
+    itemsPerPage: 'عناصر',
+
+    // Loading States
+    saving: 'جاري الحفظ...',
+    deleting: 'جاري الحذف...',
+    loading: 'جاري التحميل...',
+    uploading: 'جاري الرفع...',
+
+    // Image Upload
+    dragAndDrop: 'اسحب وأفلت الصورة هنا',
+    orClickToUpload: 'أو انقر للرفع',
+    supportedFormats: 'يدعم: JPEG, PNG, WebP, GIF',
+    maxSize: 'الحد الأقصى: 5 ميجابايت',
+    removeImage: 'إزالة الصورة',
+    uploadProgress: 'جاري الرفع',
+
+    // Sidebar
+    welcomeAdmin: 'مرحباً',
+    adminPanel: 'لوحة الإدارة',
   },
   en: {
     telegramStars: "Telegram Stars",
@@ -94,6 +262,174 @@ export const translations = {
     telegramPremium: "Telegram Premium Subscriptions",
     teleLogin: "solve login problem",
     gameBooster: "GearUp Booster",
+    login: 'Login',
+    register: 'Register',
+    forgotPassword: 'Forgot Password',
+    profile: 'Profile',
+    orders: 'Orders',
+    settings: 'Settings',
+    logout: 'Logout',
+
+    // ============================================
+    // Admin Dashboard Translations
+    // ============================================
+
+    // Navigation
+    adminDashboard: 'Dashboard',
+    gamesManagement: 'Games Management',
+    packagesManagement: 'Packages Management',
+    statistics: 'Statistics',
+
+    // Common Actions
+    add: 'Add',
+    edit: 'Edit',
+    delete: 'Delete',
+    save: 'Save',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    search: 'Search',
+    filter: 'Filter',
+    clearFilters: 'Clear Filters',
+    retry: 'Retry',
+    refresh: 'Refresh',
+    update: 'Update',
+    create: 'Create',
+    close: 'Close',
+    back: 'Back',
+    viewAll: 'View All',
+
+    // Game Form Labels
+    addGame: 'Add Game',
+    editGame: 'Edit Game',
+    deleteGame: 'Delete Game',
+    gameName: 'Game Name',
+    gameNameAr: 'Game Name (Arabic)',
+    gameDescription: 'Game Description',
+    gameDescriptionAr: 'Game Description (Arabic)',
+    gameImage: 'Game Image',
+    gameCategory: 'Game Category',
+    gameStatus: 'Game Status',
+
+    // Package Form Labels
+    addPackage: 'Add Package',
+    editPackage: 'Edit Package',
+    deletePackage: 'Delete Package',
+    packageGame: 'Game',
+    packageAmount: 'Amount',
+    packagePrice: 'Price',
+    packageOldPrice: 'Old Price',
+    packageStock: 'Stock',
+    packagePopular: 'Popular Package',
+    packageStatus: 'Package Status',
+
+    // Status Labels
+    active: 'Active',
+    inactive: 'Inactive',
+    allStatus: 'All Status',
+    allCategories: 'All Categories',
+    allGames: 'All Games',
+    lowStock: 'Low Stock',
+    outOfStock: 'Out of Stock',
+
+    // Success Messages
+    gameCreated: 'Game created successfully',
+    gameUpdated: 'Game updated successfully',
+    gameDeleted: 'Game deleted successfully',
+    packageCreated: 'Package created successfully',
+    packageUpdated: 'Package updated successfully',
+    packageDeleted: 'Package deleted successfully',
+    stockUpdated: 'Stock updated successfully',
+    imageuploaded: 'Image uploaded successfully',
+
+    // Error Messages
+    errorLoadingGames: 'Failed to load games',
+    errorLoadingPackages: 'Failed to load packages',
+    errorLoadingStats: 'Failed to load statistics',
+    errorCreatingGame: 'Failed to create game',
+    errorUpdatingGame: 'Failed to update game',
+    errorDeletingGame: 'Failed to delete game',
+    errorCreatingPackage: 'Failed to create package',
+    errorUpdatingPackage: 'Failed to update package',
+    errorDeletingPackage: 'Failed to delete package',
+    errorUploadingImage: 'Failed to upload image',
+
+    // Validation Messages
+    fieldRequired: 'This field is required',
+    invalidPrice: 'Price must be a positive number',
+    invalidStock: 'Stock must be a non-negative number',
+    nameTooShort: 'Name must be at least 2 characters',
+    oldPriceMustBeHigher: 'Old price must be higher than current price',
+    imageSizeTooLarge: 'Image size exceeds 5MB',
+    invalidImageType: 'Unsupported file type. Only JPEG, PNG, WebP, GIF are accepted',
+
+    // Confirmation Dialogs
+    confirmDeleteGame: 'Are you sure you want to delete this game?',
+    confirmDeletePackage: 'Are you sure you want to delete this package?',
+    actionCannotBeUndone: 'This action cannot be undone',
+
+    // Statistics
+    totalActiveGames: 'Total Active Games',
+    totalActivePackages: 'Total Active Packages',
+    totalRevenue: 'Total Revenue',
+    totalOrders: 'Total Orders',
+    popularGames: 'Popular Games',
+    lowStockPackages: 'Low Stock Packages',
+    noGamesFound: 'No games found',
+    noPackagesFound: 'No packages found',
+    noDataAvailable: 'No data available',
+
+    // Date Range Filter
+    dateRange: 'Date Range',
+    today: 'Today',
+    last7Days: 'Last 7 Days',
+    last30Days: 'Last 30 Days',
+    customRange: 'Custom Range',
+    applyFilter: 'Apply',
+    clearFilter: 'Clear',
+    dateFilterActive: 'Date filter active',
+
+    // Table Headers
+    image: 'Image',
+    nameEn: 'Name (EN)',
+    nameAr: 'Name (AR)',
+    category: 'Category',
+    packagesCount: 'Packages',
+    status: 'Status',
+    actions: 'Actions',
+    price: 'Price',
+    oldPrice: 'Old Price',
+    stock: 'Stock',
+    popular: 'Popular',
+    game: 'Game',
+    amount: 'Amount',
+    ordersCount: 'Orders',
+
+    // Pagination
+    previous: 'Previous',
+    next: 'Next',
+    page: 'Page',
+    of: 'of',
+    showing: 'Showing',
+    results: 'results',
+    itemsPerPage: 'items',
+
+    // Loading States
+    saving: 'Saving...',
+    deleting: 'Deleting...',
+    loading: 'Loading...',
+    uploading: 'Uploading...',
+
+    // Image Upload
+    dragAndDrop: 'Drag and drop image here',
+    orClickToUpload: 'or click to upload',
+    supportedFormats: 'Supports: JPEG, PNG, WebP, GIF',
+    maxSize: 'Max size: 5MB',
+    removeImage: 'Remove Image',
+    uploadProgress: 'Uploading',
+
+    // Sidebar
+    welcomeAdmin: 'Welcome',
+    adminPanel: 'Admin Panel',
   }
 };
 export type TranslationKey = keyof typeof translations.ar;

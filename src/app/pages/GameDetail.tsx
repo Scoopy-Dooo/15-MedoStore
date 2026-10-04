@@ -1,24 +1,15 @@
 import { useParams, Navigate } from 'react-router';
 import { motion } from 'motion/react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { useApp } from '../context/AppContext';
+import { useGame } from '../hooks/useGame';
+import { useGamePackages } from '../hooks/useGamePackages';
 import { ProductCard } from '../components/ProductCard';
-import { 
-  gamesData, 
-  pubgIdPackages, 
-  pubgQrPackages, 
-  pubgPrimePackages,
-  freefireIdPackages,
-  freefireMembershipPackages,
-  freefireAccountPackages,
-  // efootballAndroidPackages,
-  // efootballIphonePackages,
-  telegramStarsPackages,
-  tiktokPackages,
-  telegramLoginFeeFeatures,
-  telegramPremiumPackages,
-  gearUpBoosterSub
-} from '../data/gamesData';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { Button } from '../components/ui/button';
+import { Skeleton } from '../components/ui/skeleton';
+import { ProductCardSkeleton } from '../components/skeletons/ProductCardSkeleton';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router';
 
@@ -28,7 +19,80 @@ export default function GameDetail() {
   const { userName, theme } = useApp();
   const isDark = theme === 'dark';
 
-  const game = gamesData.find(g => g.id === gameId);
+  // Fetch game by ID
+  const { data: game, isLoading: gameLoading, isError: gameError, refetch: refetchGame } = useGame(gameId || '');
+  
+  // Fetch packages for this game (only when game is loaded)
+  const { data: packages = [], isLoading: packagesLoading, isError: packagesError, refetch: refetchPackages } = useGamePackages(game?.id || '', {
+    enabled: !!game?.id,
+  });
+
+  const isLoading = gameLoading || packagesLoading;
+  const isError = gameError || packagesError;
+
+  // Loading state
+  if (gameLoading) {
+    return (
+      <div className="min-h-screen">
+        {/* Hero Skeleton */}
+        <section className="relative h-[40vh] min-h-[300px] flex items-center justify-center overflow-hidden">
+          <Skeleton className="absolute inset-0" />
+          <div className="relative z-10 container mx-auto px-4">
+            <Skeleton className="h-6 w-32 mb-6" />
+            <Skeleton className="h-16 w-64" />
+          </div>
+        </section>
+
+        {/* Packages Skeleton */}
+        <section className="py-16 container mx-auto px-4">
+          <Skeleton className="h-10 w-48 mb-6" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <ProductCardSkeleton />
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Error or not found
+  if (!gameLoading && (!game || gameError)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center container mx-auto px-4">
+        <div className="text-center max-w-md">
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {language === 'ar'
+                ? 'اللعبة غير موجودة أو حدث خطأ في التحميل'
+                : 'Game not found or failed to load'}
+            </AlertDescription>
+          </Alert>
+          <div className="flex gap-4 justify-center">
+            <Link to="/">
+              <Button variant="outline">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {t('home')}
+              </Button>
+            </Link>
+            {gameError && (
+              <Button onClick={() => refetchGame()}>
+                {language === 'ar' ? 'إعادة المحاولة' : 'Retry'}
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!game) {
     return <Navigate to="/" replace />;
@@ -45,25 +109,66 @@ export default function GameDetail() {
     } else {
       message = language === 'ar'
         ? `مرحباً، أريد طلب ${amount} من ${gameName} بسعر ${price.toLocaleString()} جنيه {من الموقع الالكتروني}`
-        : `Hello, I want to order ${amount} from ${gameName} for ${price.toLocaleString()} SDG  {من الموقع الالكتروني}`;
+        : `Hello, I want to order ${amount} from ${gameName} for ${price.toLocaleString()} SDG {من الموقع الالكتروني}`;
     }
     
     window.open(`https://wa.me/249908180432?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const renderPackageSection = (title: string, packages: any[]) => (
-    <div className="mb-16">
-      <h3 className={`text-2xl md:text-3xl font-bold mb-6 bg-gradient-to-r bg-clip-text text-transparent ${
-        isDark 
-          ? 'from-purple-400 to-purple-400'
-          : 'from-purple-600 to-purple-600'
-      }`}>
-        {title}
-      </h3>
+  // Render packages with loading/error states
+  const renderPackages = () => {
+    if (packagesLoading) {
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[...Array(8)].map((_, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+            >
+              <ProductCardSkeleton />
+            </motion.div>
+          ))}
+        </div>
+      );
+    }
+
+    if (packagesError) {
+      return (
+        <Alert variant="destructive" className="max-w-2xl mx-auto">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="flex items-center justify-between">
+            <span>
+              {language === 'ar'
+                ? 'فشل تحميل الباقات'
+                : 'Failed to load packages'}
+            </span>
+            <Button onClick={() => refetchPackages()} variant="outline" size="sm">
+              {language === 'ar' ? 'إعادة المحاولة' : 'Retry'}
+            </Button>
+          </AlertDescription>
+        </Alert>
+      );
+    }
+
+    if (packages.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
+            {language === 'ar'
+              ? 'لا توجد باقات متاحة حالياً'
+              : 'No packages available at the moment'}
+          </p>
+        </div>
+      );
+    }
+
+    return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {packages.map((pkg, idx) => (
           <motion.div
-            key={idx}
+            key={pkg.id}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
@@ -77,8 +182,8 @@ export default function GameDetail() {
           </motion.div>
         ))}
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen">
@@ -129,85 +234,14 @@ export default function GameDetail() {
 
       {/* Packages */}
       <section className="py-16 container mx-auto px-4">
-        {gameId === 'pubg' && (
-          <>
-            {renderPackageSection(
-              language === 'ar' ? 'عروض الأيدي' : 'ID Offers',
-              pubgIdPackages
-            )}
-            {renderPackageSection(
-              language === 'ar' ? 'عروض QR' : 'QR Offers',
-              pubgQrPackages
-            )}
-            {renderPackageSection(
-              language === 'ar' ? 'عروض البرايم' : 'Prime Offers',
-              pubgPrimePackages
-            )}
-          </>
-        )}
-
-        {gameId === 'freefire' && (
-          <>
-            {renderPackageSection(
-              language === 'ar' ? 'عروض الأيدي' : 'ID Offers',
-              freefireIdPackages
-            )}
-            {renderPackageSection(
-              language === 'ar' ? 'باقات العضوية (الأيدي)' : 'Membership Packages (ID)',
-              freefireMembershipPackages
-            )}
-            {renderPackageSection(
-              language === 'ar' ? 'عروض الحساب' : 'Account Offers',
-              freefireAccountPackages
-            )}
-          </>
-        )}
-
-        {/* {gameId === 'efootball' && (
-          <>
-            {renderPackageSection(
-              t('androidOffers'),
-              efootballAndroidPackages
-            )}
-            {renderPackageSection(
-              t('iphoneOffers'),
-              efootballIphonePackages
-            )}
-          </>
-        )} */}
-        {gameId === 'gearUp' && (
-          <>
-            {renderPackageSection(
-              t('gameBooster'),
-              gearUpBoosterSub
-            )}
-          </>
-        )}
-        {gameId === 'telegram' && (
-          <>
-              {renderPackageSection(
-                t('teleLogin'),
-                telegramLoginFeeFeatures
-              )}
-            {renderPackageSection(
-              t('telegramStars'),
-              telegramStarsPackages
-            )}
-            {renderPackageSection(
-              t('telegramPremium'),
-              telegramPremiumPackages
-            )}
-          </>
-        )}
-
-        {gameId === 'tiktok' && (
-          <>
-            {renderPackageSection(
-              language === 'ar' ? 'باقات العملات' : 'Coins Packages',
-              tiktokPackages
-            )}
-          </>
-        )}
+        <h2 className={`text-3xl md:text-4xl font-bold mb-8 bg-gradient-to-r bg-clip-text text-transparent ${
+          isDark 
+            ? 'from-purple-400 to-purple-400'
+            : 'from-purple-600 to-purple-600'
+        }`}>
+          {language === 'ar' ? 'الباقات المتاحة' : 'Available Packages'}
+        </h2>
+        {renderPackages()}
       </section>
     </div>
   );

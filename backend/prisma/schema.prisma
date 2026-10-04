@@ -1,0 +1,303 @@
+// Medo Store Database Schema
+// نموذج قاعدة البيانات الكامل
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// نموذج المستخدم
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  phone         String?   @unique
+  password      String
+  name          String
+  role          UserRole  @default(USER)
+  isVerified    Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  
+  // علاقات
+  orders        Order[]
+  reviews       Review[]
+  referrals     Referral[] @relation("ReferredBy")
+  referredUsers Referral[] @relation("Referrer")
+  wishlist      Wishlist[]
+  notifications Notification[]
+  
+  // بيانات إضافية
+  avatar        String?
+  loyaltyPoints Int       @default(0)
+  
+  // تواريخ
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLogin     DateTime?
+  
+  @@index([email])
+  @@index([phone])
+  @@map("users")
+}
+
+// دور المستخدم
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// نموذج اللعبة
+model Game {
+  id          String    @id @default(uuid())
+  name        String
+  nameAr      String
+  slug        String    @unique
+  description String?
+  descriptionAr String?
+  image       String
+  category    String
+  isActive    Boolean   @default(true)
+  
+  // علاقات
+  packages    Package[]
+  
+  // ترتيب العرض
+  sortOrder   Int       @default(0)
+  
+  // تواريخ
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([slug])
+  @@index([category])
+  @@map("games")
+}
+
+// نموذج الباقة
+model Package {
+  id          String    @id @default(uuid())
+  gameId      String
+  game        Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  amount      String
+  price       Decimal   @db.Decimal(10, 2)
+  oldPrice    Decimal?  @db.Decimal(10, 2)
+  isPopular   Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  stock       Int       @default(999)
+  
+  // علاقات
+  orderItems  OrderItem[]
+  wishlist    Wishlist[]
+  
+  // ترتيب العرض
+  sortOrder   Int       @default(0)
+  
+  // تواريخ
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([gameId])
+  @@index([isPopular])
+  @@map("packages")
+}
+
+// نموذج الطلب
+model Order {
+  id              String      @id @default(uuid())
+  orderNumber     String      @unique
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  
+  status          OrderStatus @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod   String?
+  
+  // المبالغ
+  subtotal        Decimal     @db.Decimal(10, 2)
+  discount        Decimal     @default(0) @db.Decimal(10, 2)
+  total           Decimal     @db.Decimal(10, 2)
+  
+  // معلومات إضافية
+  playerInfo      Json?       // معلومات اللاعب (Player ID, etc.)
+  notes           String?
+  promoCode       String?
+  
+  // علاقات
+  items           OrderItem[]
+  transaction     Transaction?
+  
+  // تواريخ
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  completedAt     DateTime?
+  
+  @@index([userId])
+  @@index([orderNumber])
+  @@index([status])
+  @@map("orders")
+}
+
+// حالة الطلب
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+// حالة الدفع
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// نموذج عنصر الطلب
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  packageId String
+  package   Package  @relation(fields: [packageId], references: [id])
+  
+  quantity  Int      @default(1)
+  price     Decimal  @db.Decimal(10, 2)
+  
+  createdAt DateTime @default(now())
+  
+  @@index([orderId])
+  @@index([packageId])
+  @@map("order_items")
+}
+
+// نموذج المعاملة المالية
+model Transaction {
+  id              String    @id @default(uuid())
+  orderId         String    @unique
+  order           Order     @relation(fields: [orderId], references: [id])
+  
+  transactionId   String    @unique
+  amount          Decimal   @db.Decimal(10, 2)
+  currency        String    @default("SDG")
+  status          String
+  paymentMethod   String
+  
+  // بيانات إضافية من بوابة الدفع
+  gatewayResponse Json?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([transactionId])
+  @@map("transactions")
+}
+
+// نموذج التقييم
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  gameId    String?
+  rating    Int      // 1-5
+  comment   String?
+  isActive  Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([gameId])
+  @@map("reviews")
+}
+
+// نموذج الإحالة
+model Referral {
+  id          String   @id @default(uuid())
+  referrerId  String
+  referrer    User     @relation("Referrer", fields: [referrerId], references: [id])
+  
+  referredId  String
+  referred    User     @relation("ReferredBy", fields: [referredId], references: [id])
+  
+  reward      Decimal  @db.Decimal(10, 2)
+  isRewarded  Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([referrerId])
+  @@index([referredId])
+  @@map("referrals")
+}
+
+// نموذج المفضلة
+model Wishlist {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  packageId String
+  package   Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, packageId])
+  @@index([userId])
+  @@map("wishlists")
+}
+
+// نموذج الرمز الترويجي
+model PromoCode {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  discount    Decimal   @db.Decimal(5, 2) // نسبة الخصم
+  maxUses     Int       @default(1)
+  usedCount   Int       @default(0)
+  isActive    Boolean   @default(true)
+  
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([code])
+  @@map("promo_codes")
+}
+
+// نموذج الإشعار
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title     String
+  titleAr   String?
+  message   String
+  messageAr String?
+  type      String
+  isRead    Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([isRead])
+  @@map("notifications")
+}
+
+// نموذج الإعدادات
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  
+  updatedAt DateTime @updatedAt
+  
+  @@map("settings")
+}

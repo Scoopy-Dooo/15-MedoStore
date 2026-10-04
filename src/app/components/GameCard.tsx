@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { motion } from 'motion/react';
 import { useTranslation } from '../hooks/useTranslation';
-import { Game } from '../data/gamesData';
+import type { Game } from '../../services/types';
 import { ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -31,6 +31,8 @@ export function GameCard({ game }: GameCardProps) {
               src={game.image}
               alt={language === 'ar' ? game.nameAr : game.name}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              loading="lazy"
+              decoding="async"
             />
             <div className={`absolute inset-0 bg-gradient-to-t ${
               isDark 

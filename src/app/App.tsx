@@ -1,12 +1,19 @@
 import { RouterProvider } from 'react-router';
-import { AppProvider, useApp } from './context/AppContext';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AppProvider } from './context/AppContext';
 import { router } from './routes';
+import { queryClient } from '../lib/queryClient';
 
 export default function App() {
-
   return (
-    <AppProvider>
-      <RouterProvider router={router} />
-    </AppProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppProvider>
+        <RouterProvider router={router} />
+      </AppProvider>
+      
+      {/* React Query DevTools - Only in development */}
+      {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+    </QueryClientProvider>
   );
 }

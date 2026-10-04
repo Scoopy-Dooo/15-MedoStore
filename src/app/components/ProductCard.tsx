@@ -1,11 +1,11 @@
 import { motion } from 'motion/react';
 import { useTranslation } from '../hooks/useTranslation';
-import { GamePackage } from '../data/gamesData';
+import type { Package } from '../../services/types';
 import { Sparkles } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 interface ProductCardProps {
-  package: GamePackage;
+  package: Package;
   gameName: string;
   onOrder: () => void;
 }

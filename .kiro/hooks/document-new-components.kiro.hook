@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Document New Components",
+  "description": "يذكرني بتوثيق الوظائف والمكونات المعقدة",
+  "version": "1",
+  "when": {
+    "type": "fileCreated",
+    "patterns": [
+      "src/app/components/*.tsx",
+      "src/app/pages/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "تم إنشاء مكون أو صفحة جديدة. تأكد من:\n1. إضافة TypeScript types لجميع الـ Props\n2. كتابة تعليقات JSDoc للوظائف المعقدة\n3. إضافة تعليقات بالعربية للمنطق المعقد\n4. توثيق أي props أو state غير واضح\n5. إضافة أمثلة على الاستخدام إذا لزم الأمر\nهل تحتاج مساعدة في التوثيق؟"
+  }
+}

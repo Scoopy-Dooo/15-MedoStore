@@ -1,21 +1,17 @@
-import { Gamepad2, Shield, Star, Users, Zap } from 'lucide-react';
+import { Gamepad2, Shield, Star, Users, Zap, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import medoLogo from '../../assets/medo-logo-cutted.png';
 import { GameCard } from '../components/GameCard';
 import { ProductCard } from '../components/ProductCard';
 import { useApp } from '../context/AppContext';
-import {telegramLoginFeeFeatures,  freefireIdPackages, gamesData, pubgIdPackages, tiktokPackages } from '../data/gamesData';
 import { useTranslation } from '../hooks/useTranslation';
-// import { freefireIdPackages, pubgIdPackages, telegramLoginFeeFeatures, tiktokPackages } from '../data/gamesData';
+import { useGames } from '../hooks/useGames';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { Button } from '../components/ui/button';
+import { GameCardSkeleton } from '../components/skeletons/GameCardSkeleton';
+import { ProductCardSkeleton } from '../components/skeletons/ProductCardSkeleton';
+
 const heroImage = 'https://media.istockphoto.com/id/2186585249/photo/gamer-work-space-concept-top-view-a-gaming-gear-mouse-keyboard-joystick-headset-mobile.jpg?s=612x612&w=0&k=20&c=T55vDUdRFbrv6K_rSs97OfcTdqmI946klCpZOCrJ5vA=';
-
-const popularProducts = [
-  { ...pubgIdPackages[3], gameName: 'PUBG Mobile', gameId: 'pubg' },
-  { ...freefireIdPackages[0], gameName: 'Free Fire', gameId: 'freefire' },
-  { ...telegramLoginFeeFeatures[0], gameName: 'Telegram', gameId: 'telegram' },
-  { ...tiktokPackages[0], gameName: 'TikTok', gameId: 'tiktok' }
-];
-
 
 const reviews = [
   { id: 1, rating: 5 },
@@ -28,7 +24,20 @@ export default function Home() {
   const { userName, theme } = useApp();
   const isDark = theme === 'dark';
   
-  
+  // Fetch games from API
+  const { data: apiGames, isLoading, isError, refetch } = useGames({ limit: 8 });
+  const gamesData = apiGames?.games || [];
+  const popularProducts = apiGames?.games.slice(0, 4).flatMap(game =>
+    (game.packages || []).slice(0, 1).map(pkg => ({
+      id: pkg.id,
+      amount: pkg.amount,
+      price: pkg.price,
+      oldPrice: pkg.oldPrice,
+      gameName: game.name,
+      gameId: game.id,
+      isPopular: pkg.isPopular,
+    }))
+  ) || [];
   
   const features = [
     { icon: Zap, text: language === 'ar' ? 'تسليم فوري' : 'Instant Delivery' },
@@ -176,19 +185,55 @@ export default function Home() {
             {t('gameCategories')}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {gamesData.map((game, idx) => (
-              <motion.div
-                key={game.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <GameCard game={game} />
-              </motion.div>
-            ))}
-          </div>
+          {/* Loading State */}
+          {isLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[...Array(8)].map((_, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                >
+                  <GameCardSkeleton />
+                </motion.div>
+              ))}
+            </div>
+          )}
+
+          {/* Error State */}
+          {isError && !isLoading && (
+            <Alert variant="destructive" className="max-w-2xl mx-auto">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="flex items-center justify-between">
+                <span>
+                  {language === 'ar'
+                    ? 'فشل تحميل الألعاب. جاري عرض البيانات المحفوظة.'
+                    : 'Failed to load games. Showing cached data.'}
+                </span>
+                <Button onClick={() => refetch()} variant="outline" size="sm">
+                  {language === 'ar' ? 'إعادة المحاولة' : 'Retry'}
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Games Grid */}
+          {!isLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {gamesData.map((game, idx) => (
+                <motion.div
+                  key={game.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <GameCard game={game} />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </motion.div>
       </section>
 
@@ -208,23 +253,42 @@ export default function Home() {
             {t('popularTopUps')}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {popularProducts.map((product, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <ProductCard
-                  package={product}
-                  gameName={product.gameName}
-                  onOrder={() => handleOrder(product.gameName, product.amount, product.price)}
-                />
-              </motion.div>
-            ))}
-          </div>
+          {/* Loading State */}
+          {isLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                >
+                  <ProductCardSkeleton />
+                </motion.div>
+              ))}
+            </div>
+          )}
+
+          {/* Products Grid */}
+          {!isLoading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {popularProducts.map((product, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <ProductCard
+                    package={product}
+                    gameName={product.gameName}
+                    onOrder={() => handleOrder(product.gameName, product.amount, product.price)}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </motion.div>
       </section>
 

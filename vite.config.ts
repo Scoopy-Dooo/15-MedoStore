@@ -19,4 +19,57 @@ export default defineConfig({
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  // ============================================
+  // Test Configuration - إعدادات الاختبارات
+  // ============================================
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    css: false,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/**',
+        'src/test/**',
+        '**/*.d.ts',
+        'src/app/components/ui/**',
+      ],
+    },
+  },
+
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/react-router')
+          ) {
+            return 'vendor';
+          }
+          if (id.includes('node_modules/@tanstack')) return 'query';
+          if (id.includes('node_modules/@radix-ui')) return 'ui';
+          if (
+            id.includes('node_modules/react-hook-form') ||
+            id.includes('node_modules/@hookform') ||
+            id.includes('node_modules/zod')
+          ) {
+            return 'forms';
+          }
+          if (
+            id.includes('node_modules/motion') ||
+            id.includes('node_modules/framer-motion')
+          ) {
+            return 'motion';
+          }
+          if (id.includes('/pages/admin/')) return 'admin';
+        },
+      },
+    },
+  },
 })

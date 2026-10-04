@@ -5,6 +5,7 @@ import { Menu, Moon, Sun, Globe } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import logoImg from '../../assets/medo-logo-cutted.png';
+import UserMenu from './UserMenu';
 
 export function Navbar() {
   const { theme, language, toggleTheme, toggleLanguage } = useApp();
@@ -66,6 +67,9 @@ export function Navbar() {
 
           {/* Controls */}
           <div className="flex items-center gap-4">
+            {/* User Menu */}
+            <UserMenu />
+
             {/* Language Toggle */}
             <button
               onClick={toggleLanguage}
