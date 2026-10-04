@@ -5,10 +5,8 @@
 
 import prisma from '../config/database.js';
 import { AppError } from '../middlewares/errorHandler.js';
-import { Prisma, Decimal, OrderStatus, PaymentStatus } from '@prisma/client';
-import { PackagesService } from './packages.service.js';
-
-const packagesService = new PackagesService();
+import { Prisma, OrderStatus, PaymentStatus } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library';
 
 interface CreateOrderData {
   userId: string;

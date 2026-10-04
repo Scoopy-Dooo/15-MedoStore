@@ -5,7 +5,7 @@
 
 import prisma from '../config/database.js';
 import { AppError } from '../middlewares/errorHandler.js';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserRole } from '@prisma/client';
 
 interface DashboardStats {
   users: {
@@ -174,7 +174,7 @@ export class AdminService {
     page?: number;
     limit?: number;
     search?: string;
-    role?: string;
+    role?: UserRole;
     isActive?: boolean;
   }) {
     const { 
@@ -257,7 +257,7 @@ export class AdminService {
   /**
    * تحديث دور المستخدم
    */
-  async updateUserRole(userId: string, role: 'USER' | 'ADMIN' | 'SUPER_ADMIN') {
+  async updateUserRole(userId: string, role: UserRole) {
     return prisma.user.update({
       where: { id: userId },
       data: { role },

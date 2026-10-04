@@ -4,10 +4,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
 import dotenv from 'dotenv';
-import { errorHandler } from './middlewares/errorHandler.ts';
-import { generalLimiter } from './middlewares/rateLimiter.ts';
-import routes from './routes/index.ts';
-import prisma from './config/database.ts';
+import { errorHandler } from './middlewares/errorHandler.js';
+import { generalLimiter } from './middlewares/ratelimiter.js';
+import routes from './routes/index.js';
+import prisma from './config/database.js';
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/api', generalLimiter);
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.json({ message: 'Medo Store API', version: '2.0.0' });
 });
 

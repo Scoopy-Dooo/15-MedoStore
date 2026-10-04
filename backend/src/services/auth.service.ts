@@ -4,7 +4,7 @@
  */
 
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { type SignOptions } from 'jsonwebtoken';
 import prisma from '../config/database.js';
 import { AppError } from '../middlewares/errorHandler.js';
 
@@ -226,14 +226,13 @@ export class AuthService {
     }
 
     // إنشاء token لإعادة التعيين (مؤقت - 1 ساعة)
-    const resetToken = jwt.sign(
+    jwt.sign(
       { userId: user.id },
       process.env.JWT_SECRET || 'secret',
       { expiresIn: '1h' }
     );
 
-    // هنا يتم إرسال البريد الإلكتروني (سيتم تطبيقه لاحقاً)
-    // await emailService.sendPasswordReset(email, resetToken);
+    // Password reset email delivery is not configured yet.
   }
 
   /**
@@ -283,7 +282,7 @@ export class AuthService {
     return jwt.sign(
       { userId, email, role },
       process.env.JWT_SECRET || 'secret',
-      { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
+      { expiresIn: (process.env.JWT_EXPIRES_IN || '24h') as SignOptions['expiresIn'] }
     );
   }
 
@@ -294,7 +293,7 @@ export class AuthService {
     return jwt.sign(
       { userId },
       process.env.JWT_REFRESH_SECRET || 'refresh-secret',
-      { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+      { expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN || '7d') as SignOptions['expiresIn'] }
     );
   }
 }

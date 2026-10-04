@@ -6,7 +6,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller.js';
 import { authenticate } from '../middlewares/auth.js';
-import { loginLimiter } from '../middlewares/rateLimiter.js';
+import { loginLimiter } from '../middlewares/ratelimiter.js';
 import { body } from 'express-validator';
 
 const router = Router();

@@ -4,8 +4,13 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+import { UserRole } from '@prisma/client';
 import { AdminService } from '../services/admin.service.js';
 import { AppError } from '../middlewares/errorHandler.js';
+import { getRouteParam } from '../utils/routeParams.js';
+
+const isUserRole = (value: unknown): value is UserRole =>
+  Object.values(UserRole).some((role) => role === value);
 
 export class AdminController {
   private adminService: AdminService;
@@ -17,7 +22,7 @@ export class AdminController {
   /**
    * الحصول على إحصائيات Dashboard
    */
-  getDashboardStats = async (req: Request, res: Response, next: NextFunction) => {
+  getDashboardStats = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const stats = await this.adminService.getDashboardStats();
 
@@ -72,7 +77,11 @@ export class AdminController {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       const search = req.query.search as string;
-      const role = req.query.role as string;
+      const roleValue = req.query.role;
+      if (roleValue !== undefined && !isUserRole(roleValue)) {
+        throw new AppError('الدور غير صالح', 400);
+      }
+      const role = roleValue;
       const isActive = req.query.isActive === 'true' ? true : 
                       req.query.isActive === 'false' ? false : undefined;
 
@@ -98,7 +107,7 @@ export class AdminController {
    */
   updateUserStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { userId } = req.params;
+      const userId = getRouteParam(req, 'userId');
       const { isActive } = req.body;
 
       if (typeof isActive !== 'boolean') {
@@ -122,10 +131,10 @@ export class AdminController {
    */
   updateUserRole = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { userId } = req.params;
+      const userId = getRouteParam(req, 'userId');
       const { role } = req.body;
 
-      if (!['USER', 'ADMIN', 'SUPER_ADMIN'].includes(role)) {
+      if (!isUserRole(role)) {
         throw new AppError('الدور غير صالح', 400);
       }
 
@@ -146,7 +155,7 @@ export class AdminController {
    */
   deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { userId } = req.params;
+      const userId = getRouteParam(req, 'userId');
 
       await this.adminService.deleteUser(userId);
 
@@ -164,7 +173,7 @@ export class AdminController {
    */
   getUserStats = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { userId } = req.params;
+      const userId = getRouteParam(req, 'userId');
 
       const stats = await this.adminService.getUserStats(userId);
 

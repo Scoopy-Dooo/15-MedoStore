@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticate = async (req: Request, _res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) throw new AppError('غير مصرح', 401);
@@ -29,7 +29,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const authorize = (...roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user || !roles.includes(req.user.role)) {
       return next(new AppError('ليس لديك صلاحية', 403));
     }

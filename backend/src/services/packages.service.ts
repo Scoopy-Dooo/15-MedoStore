@@ -3,7 +3,7 @@
  * Packages Service
  */
 
-import prisma from '../config/database.ts';
+import prisma from '../config/database.js';
 import { AppError } from '../middlewares/errorHandler.js';
 import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';

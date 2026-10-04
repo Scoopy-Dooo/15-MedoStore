@@ -94,7 +94,7 @@ export class AuthController {
   /**
    * تسجيل الخروج
    */
-  logout = async (req: Request, res: Response, next: NextFunction) => {
+  logout = async (_req: Request, res: Response, next: NextFunction) => {
     try {
       // يمكن إضافة منطق لإبطال Token هنا
       res.json({

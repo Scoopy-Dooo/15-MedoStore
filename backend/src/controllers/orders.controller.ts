@@ -7,6 +7,7 @@ import { Request, Response, NextFunction } from 'express';
 import { OrdersService } from '../services/orders.service.js';
 import { AppError } from '../middlewares/errorHandler.js';
 import { OrderStatus, PaymentStatus } from '@prisma/client';
+import { getRouteParam } from '../utils/routeParams.js';
 
 export class OrdersController {
   private ordersService: OrdersService;
@@ -87,7 +88,7 @@ export class OrdersController {
    */
   getOrderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { orderId } = req.params;
+      const orderId = getRouteParam(req, 'orderId');
       const userId = req.user?.id;
       const userRole = req.user?.role;
 
@@ -111,7 +112,7 @@ export class OrdersController {
    */
   getOrderByNumber = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { orderNumber } = req.params;
+      const orderNumber = getRouteParam(req, 'orderNumber');
       const userId = req.user?.id;
       const userRole = req.user?.role;
 
@@ -134,7 +135,7 @@ export class OrdersController {
    */
   updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { orderId } = req.params;
+      const orderId = getRouteParam(req, 'orderId');
       const { status, paymentStatus } = req.body;
 
       if (!status) {
@@ -169,7 +170,7 @@ export class OrdersController {
    */
   cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { orderId } = req.params;
+      const orderId = getRouteParam(req, 'orderId');
       const userId = req.user?.id;
       const userRole = req.user?.role;
 
@@ -224,7 +225,7 @@ export class OrdersController {
    */
   getWhatsAppMessage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { orderId } = req.params;
+      const orderId = getRouteParam(req, 'orderId');
       const userId = req.user?.id;
       const userRole = req.user?.role;
 
