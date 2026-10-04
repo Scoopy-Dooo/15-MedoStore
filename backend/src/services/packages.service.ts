@@ -12,7 +12,7 @@ interface CreatePackageData {
   gameId: string;
   amount: string;
   price: number;
-  oldPrice?: number;
+  oldPrice?: number | null;
   isPopular?: boolean;
   stock?: number;
   sortOrder?: number;
@@ -21,7 +21,7 @@ interface CreatePackageData {
 interface UpdatePackageData {
   amount?: string;
   price?: number;
-  oldPrice?: number;
+  oldPrice?: number | null;
   isPopular?: boolean;
   isActive?: boolean;
   stock?: number;
@@ -160,7 +160,7 @@ export class PackagesService {
       data: {
         ...data,
         price: new Decimal(data.price),
-        oldPrice: data.oldPrice ? new Decimal(data.oldPrice) : undefined
+        oldPrice: data.oldPrice != null ? new Decimal(data.oldPrice) : undefined
       },
       include: {
         game: {
@@ -179,15 +179,17 @@ export class PackagesService {
    * تحديث باقة (Admin)
    */
   async updatePackage(packageId: string, data: UpdatePackageData) {
-    const updateData: any = { ...data };
-
-    if (data.price !== undefined) {
-      updateData.price = new Decimal(data.price);
-    }
-
-    if (data.oldPrice !== undefined) {
-      updateData.oldPrice = data.oldPrice ? new Decimal(data.oldPrice) : null;
-    }
+    const updateData: Prisma.PackageUpdateInput = {
+      ...(data.amount !== undefined && { amount: data.amount }),
+      ...(data.price !== undefined && { price: new Decimal(data.price) }),
+      ...(data.oldPrice !== undefined && {
+        oldPrice: data.oldPrice === null ? null : new Decimal(data.oldPrice)
+      }),
+      ...(data.isPopular !== undefined && { isPopular: data.isPopular }),
+      ...(data.isActive !== undefined && { isActive: data.isActive }),
+      ...(data.stock !== undefined && { stock: data.stock }),
+      ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder })
+    };
 
     const packageData = await prisma.package.update({
       where: { id: packageId },

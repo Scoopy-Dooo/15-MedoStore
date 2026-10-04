@@ -28,6 +28,15 @@ export const authenticate = async (req: Request, _res: Response, next: NextFunct
   }
 };
 
+export const authenticateIfProvided = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.headers.authorization) {
+    next();
+    return;
+  }
+
+  void authenticate(req, res, next);
+};
+
 export const authorize = (...roles: string[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user || !roles.includes(req.user.role)) {

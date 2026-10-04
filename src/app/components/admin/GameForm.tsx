@@ -206,6 +206,7 @@ export function GameForm({ game, onSubmit, isLoading }: GameFormProps) {
                   onChange={field.onChange}
                   onRemove={() => field.onChange('')}
                   onUpload={handleImageUpload}
+                  uploadProgress={uploadProgress}
                 />
               </FormControl>
               <FormMessage />

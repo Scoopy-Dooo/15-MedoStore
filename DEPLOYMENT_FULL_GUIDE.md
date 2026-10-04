@@ -282,7 +282,7 @@ http://localhost:5173
    Branch: main
    Root Directory: backend
    Runtime: Node
-   Build Command: npm install && npm run db:generate && npm run build
+   Build Command: npm install --include=dev && npm run db:generate && npm run build
    Start Command: npm start
    Instance Type: Free
    ```
@@ -295,7 +295,6 @@ http://localhost:5173
 
    ```
    NODE_ENV=production
-   PORT=5000
    DATABASE_URL=postgresql://...from-neon...?sslmode=require
    JWT_SECRET=same-as-local-env-file
    JWT_REFRESH_SECRET=same-as-local-env-file
@@ -303,15 +302,18 @@ http://localhost:5173
    JWT_REFRESH_EXPIRES_IN=7d
    CORS_ORIGIN=*
    WHATSAPP_NUMBER=249908180432
-   ADMIN_EMAIL=admin@medostore.com
-   ADMIN_PASSWORD=Admin@Medo2024!
-   ADMIN_NAME=Mohamed Saad
    RATE_LIMIT_WINDOW_MS=900000
    RATE_LIMIT_MAX_REQUESTS=100
    LOG_LEVEL=info
+   CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
    ```
 
-   **⚠️ استخدم نفس القيم من `.env` المحلي!**
+   **⚠️** أضف أسرار JWT ورابط قاعدة البيانات مباشرة في Render ولا ترفعها إلى GitHub.
+   احصل على قيم Cloudinary من لوحة Cloudinary، وأضفها كمتغيرات سرية في Render فقط.
+   لا يضيف الـBackend حساب Admin تلقائياً: أنشئ حساباً من الموقع ثم غيّر دوره إلى `ADMIN`
+   من Neon SQL Editor باستخدام البريد الذي سجلت به.
 
 5. **اضغط "Create Web Service"**
 

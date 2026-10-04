@@ -10,6 +10,8 @@ interface ImageUploadProps {
   disabled?: boolean;
   maxSizeInMB?: number;
   acceptedFormats?: string[];
+  onUpload?: (file: File) => Promise<string>;
+  uploadProgress?: number;
 }
 
 const DEFAULT_MAX_SIZE_MB = 5;
@@ -22,10 +24,14 @@ export function ImageUpload({
   disabled,
   maxSizeInMB = DEFAULT_MAX_SIZE_MB,
   acceptedFormats = DEFAULT_ACCEPTED_FORMATS,
+  onUpload,
+  uploadProgress,
 }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string>('');
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const isDisabled = disabled || isUploading;
 
   const validateFile = useCallback((file: File): string | null => {
     // Validate file type
@@ -45,10 +51,10 @@ export function ImageUpload({
   const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!disabled) {
+    if (!isDisabled) {
       setIsDragging(true);
     }
-  }, [disabled]);
+  }, [isDisabled]);
 
   const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -66,16 +72,16 @@ export function ImageUpload({
     e.stopPropagation();
     setIsDragging(false);
 
-    if (disabled) return;
+    if (isDisabled) return;
 
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       const file = files[0];
       handleFile(file);
     }
-  }, [disabled]);
+  }, [isDisabled]);
 
-  const handleFile = useCallback((file: File) => {
+  const handleFile = useCallback(async (file: File) => {
     // Clear previous errors
     setError('');
 
@@ -83,6 +89,22 @@ export function ImageUpload({
     const validationError = validateFile(file);
     if (validationError) {
       setError(validationError);
+      return;
+    }
+
+    if (onUpload) {
+      setIsUploading(true);
+      try {
+        onChange(await onUpload(file));
+      } catch (uploadError) {
+        setError(
+          uploadError instanceof Error
+            ? uploadError.message
+            : 'Failed to upload image. Please try again.'
+        );
+      } finally {
+        setIsUploading(false);
+      }
       return;
     }
 
@@ -95,7 +117,7 @@ export function ImageUpload({
       setError('Failed to read file. Please try again.');
     };
     reader.readAsDataURL(file);
-  }, [onChange, validateFile]);
+  }, [onChange, onUpload, validateFile]);
 
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -106,10 +128,10 @@ export function ImageUpload({
   }, [handleFile]);
 
   const handleButtonClick = useCallback(() => {
-    if (!disabled) {
+    if (!isDisabled) {
       fileInputRef.current?.click();
     }
-  }, [disabled]);
+  }, [isDisabled]);
 
   const handleRemove = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -138,7 +160,7 @@ export function ImageUpload({
             size="icon"
             className="absolute right-2 top-2"
             onClick={handleRemove}
-            disabled={disabled}
+            disabled={isDisabled}
             aria-label="Remove image"
           >
             <X className="h-4 w-4" />
@@ -153,12 +175,12 @@ export function ImageUpload({
           className={cn(
             'flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/10 p-8 transition-colors',
             isDragging && 'border-primary bg-primary/5',
-            disabled && 'cursor-not-allowed opacity-50',
+            isDisabled && 'cursor-not-allowed opacity-50',
             error && 'border-destructive'
           )}
           onClick={handleButtonClick}
           role="button"
-          tabIndex={disabled ? -1 : 0}
+          tabIndex={isDisabled ? -1 : 0}
           aria-label="Upload image"
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -181,8 +203,15 @@ export function ImageUpload({
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-foreground">
-                {isDragging ? 'Drop image here' : 'Drag and drop an image here'}
+                {isUploading
+                  ? 'Uploading image...'
+                  : isDragging
+                    ? 'Drop image here'
+                    : 'Drag and drop an image here'}
               </p>
+              {isUploading && uploadProgress !== undefined && (
+                <p className="text-xs text-muted-foreground">{uploadProgress}%</p>
+              )}
               <p className="text-xs text-muted-foreground">
                 or click to browse files
               </p>
@@ -197,7 +226,7 @@ export function ImageUpload({
             accept={acceptedFormats.join(',')}
             onChange={handleFileInputChange}
             className="hidden"
-            disabled={disabled}
+            disabled={isDisabled}
             aria-label="File input"
           />
         </div>

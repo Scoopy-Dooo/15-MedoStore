@@ -157,6 +157,9 @@ class AdminService {
       // Authorization header will be automatically added by api interceptor
       // Axios will automatically set Content-Type with boundary for FormData
       const response = await api.post('/admin/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
         onUploadProgress: (progressEvent) => {
           if (onUploadProgress && progressEvent.total) {
             const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
